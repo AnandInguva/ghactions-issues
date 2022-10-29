@@ -20,6 +20,6 @@ jobs:
         with:
           python-version: 3.7
       - name: Run the GitHub Rest API script
-        working-directory: "."
+        working-directory: "./src"
         run: python analysis.py
         # env: $ {{ secrets.GITHUB_TOKEN }}
