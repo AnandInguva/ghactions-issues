@@ -34,6 +34,7 @@ class GitHubIssues:
       }
       r = requests.post(
           url=self.query, data=json.dumps(data), headers=self.headers)
+      print(r.json())
       # assert r.status_code == 201
 
   def search_issue_with_title(self, title, label):
