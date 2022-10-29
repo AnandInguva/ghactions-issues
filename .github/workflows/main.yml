@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: 3.7
       - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install requests
       - name: Run the GitHub Rest API script
         working-directory: ./src
         run: python analysis.py
