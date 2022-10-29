@@ -22,4 +22,4 @@ jobs:
       - name: Run the GitHub Rest API script
         working-directory: .
         run: python analysis.py
-        env: $ {{ secrets.GITHUB_TOKEN }}
+        # env: $ {{ secrets.GITHUB_TOKEN }}
