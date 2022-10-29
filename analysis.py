@@ -54,10 +54,8 @@ class GitHubIssues:
     raise NotImplementedError
 
 
-
-
 if __name__ == '__main__':
-  my_issues = GitHubIssues(owner='github-actions', repo='beam')
+  my_issues = GitHubIssues(owner='github-actions', repo='ghaction-issues')
   my_issues.create_issue(title='Found a bug, trying with Github Actions bot ',
     description='Testing creating issues with Github rest APIs',
                        label='bug')

@@ -1,9 +1,5 @@
-name: Label issues
-on:
-  issues:
-    types:
-      - reopened
-      - opened
+name: Create issues from a Python file.
+on: [push]
 jobs:
   label_issues:
     runs-on: ubuntu-latest
@@ -15,3 +11,15 @@ jobs:
         with:
           add-labels: "triage"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+  
+  python_create_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: Run the GitHub Rest API script
+        working-directory: .
+        run: python analysis.py
+        env: $ {{ secrets.GITHUB_TOKEN }}
