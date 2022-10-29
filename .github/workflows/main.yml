@@ -25,5 +25,5 @@ jobs:
       - name: Run the GitHub Rest API script
         working-directory: ./src
         run: python analysis.py
-        # run: echo "$PWD"
-        # env: $ {{ secrets.GITHUB_TOKEN }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
