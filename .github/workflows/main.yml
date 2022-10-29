@@ -27,10 +27,3 @@ jobs:
         run: python analysis.py
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-curl \
-  -X POST \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer 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" \
-   https://api.github.com/AnandInguva/ghactions-issues/issues
-  -d '{"title":"Found a bug","body":"I'\''m having a problem with this.","assignees"}'
