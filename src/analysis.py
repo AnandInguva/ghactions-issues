@@ -40,7 +40,9 @@ class GitHubIssues:
         comment_query, json.dumps(data),
         headers=self.headers
       )
-      print(respone.json())
+      print(respone.json()
+      )
+
 
     else:
       data = {
