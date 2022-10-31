@@ -7,7 +7,9 @@ class GitHubIssues:
   def __init__(self, owner, repo):
     self.owner = owner
     self.repo = repo
-    self.query = "https://api.github.com/repos/{self.owner}/{self.repo}/issues"
+    # self.query = "https://api.github.com/repos/{self.owner}/{self.repo}/issues"
+    self.query = "https://api.github.com/repos/AnandInguva/ghactions-issues/issues"
+
 
     self._github_token = os.environ['GITHUB_TOKEN']
     self.headers = {
