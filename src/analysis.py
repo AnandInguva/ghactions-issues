@@ -5,12 +5,10 @@ import json
 
 class GitHubIssues:
   def __init__(self, owner, repo):
-    # self.owner = owner
-    # self.repo = repo
-    self.query = "https://api.github.com/repos/AnandInguva/ghactions-issues/issues"
+    self.owner = owner
+    self.repo = repo
+    self.query = "https://api.github.com/repos/{self.owner}/{self.repo}/issues"
 
-    # self.query = 'https://api.github.com/repos/AnandInguva/{}/issues'.format(
-    #      self.repo)
     self._github_token = os.environ['GITHUB_TOKEN']
     self.headers = {
         "Authorization": 'token {}'.format(self._github_token),
@@ -22,11 +20,11 @@ class GitHubIssues:
 
   def create_issue(self, title, description, label: str = 'bug'):
       data = {
-          # 'owner': self.owner,
-          # 'repo': self.repo,
+          'owner': self.owner,
+          'repo': self.repo,
           'title': title,
-          # 'body': description,
-          # 'label': label
+          'body': description,
+          'label': label
       }
       r = requests.post(
           url=self.query, data=json.dumps(data), headers=self.headers)
@@ -43,6 +41,6 @@ class GitHubIssues:
 
 if __name__ == '__main__':
   my_issues = GitHubIssues(owner='AnandInguva', repo='ghaction-issues')
-  my_issues.create_issue(title='Found a bug, trying with Github Actions bot ',
+  my_issues.create_issue(title='Bug creation. Please delete the issue. ',
     description='Testing creating issues with Github rest APIs',
                        label='bug')
