@@ -23,7 +23,7 @@ class GitHubIssues:
           'A Github Personal Access token is required to create Github Issues.')
 
   def create_issue(self, title, description, label: str = 'bug'):
-    last_created_issue =  self.search_issue_with_title(title, label):
+    last_created_issue =  self.search_issue_with_title(title, label)
     if last_created_issue['total_count']:
       issue_number = last_created_issue['items']['number']
       comment_query = "/repos/{}/{}/issues/{}/comments".format(
