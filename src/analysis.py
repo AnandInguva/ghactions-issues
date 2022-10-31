@@ -10,8 +10,6 @@ class GitHubIssues:
     self.query = "https://api.github.com/repos/{}/{}/issues".format(
       self.owner, self.repo
     )
-    # self.query = "https://api.github.com/repos/AnandInguva/ghactions-issues/issues"
-
 
     self._github_token = os.environ['GITHUB_TOKEN']
     self.headers = {
@@ -23,7 +21,31 @@ class GitHubIssues:
           'A Github Personal Access token is required to create Github Issues.')
 
   def create_issue(self, title, description, label: str = None):
+    """
+    Create an issue with title, description with a label.
+    If an issue is already present, comment on the issue instead of 
+    creating a duplicate issue.
+    """
     last_created_issue =  self.search_issue_with_title(title, label)
+    if last_created_issue['total_count']:
+      self.comment_on_issue(last_created_issue=last_created_issue)
+    else:
+      data = {
+          'owner': self.owner,
+          'repo': self.repo,
+          'title': title,
+          'body': description,
+          'label': label
+      }
+      r = requests.post(
+          url=self.query, data=json.dumps(data), headers=self.headers)
+      print(r.json())
+
+  def comment_on_issue(self, last_created_issue):
+    """
+    If there is an already present issue with the title name,
+    update that issue with the new description.
+    """
     if last_created_issue['total_count']:
       items = last_created_issue['items'][0]
       comment_url = items['comments_url']
@@ -39,28 +61,11 @@ class GitHubIssues:
         comment_url, json.dumps(data),
         headers=self.headers
       )
-      print(respone.json()
-      )
-    else:
-      data = {
-          'owner': self.owner,
-          'repo': self.repo,
-          'title': title,
-          'body': description,
-          'label': label
-      }
-      r = requests.post(
-          url=self.query, data=json.dumps(data), headers=self.headers)
-      print(r.json())
-
-  def comment_on_issue(self):
-    """
-    If there is an already present issue with the title name,
-    update that issue with the new description.
-    """
-    raise NotImplementedError
-  
+    
   def search_issue_with_title(self, title, label=None):
+    """
+    Filter issues using title.
+    """
     search_query = "repo:{}/{}+{} type:issue is:open".format(
         self.owner, self.repo, title)
     if label:
