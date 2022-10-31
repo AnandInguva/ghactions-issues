@@ -23,6 +23,26 @@ class GitHubIssues:
           'A Github Personal Access token is required to create Github Issues.')
 
   def create_issue(self, title, description, label: str = 'bug'):
+    last_created_issue =  self.search_issue_with_title(title, label):
+    if last_created_issue['total_count']:
+      issue_number = last_created_issue['items']['number']
+      comment_query = "/repos/{}/{}/issues/{}/comments".format(
+        self.owner, self.repo, issue_number
+      )
+      _COMMENT = "Creating a comment on already created issue."
+      data = {
+        'owner': self.owner,
+        'repo': self.repo,
+        'body': _COMMENT,
+        issue_number: issue_number,
+      }
+      respone = requests.post(
+        comment_query, json.dumps(data),
+        headers=self.headers
+      )
+      print(respone.json())
+
+    else:
       data = {
           'owner': self.owner,
           'repo': self.repo,
@@ -41,6 +61,14 @@ class GitHubIssues:
     update that issue with the new description.
     """
     raise NotImplementedError
+  
+  def search_issue_with_title(self, title, label):
+    search_query = "repo:{}/{}+{} type:issue is:open label:{}".format(
+        self.owner, self.repo, title, label)
+    query = "https://api.github.com/search/issues?q={}".format(search_query)
+
+    response = requests.get(url=query, headers=self.headers)
+    return response.json()
 
 
 if __name__ == '__main__':
