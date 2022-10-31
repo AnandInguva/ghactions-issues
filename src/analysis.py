@@ -22,14 +22,13 @@ class GitHubIssues:
       raise Exception(
           'A Github Personal Access token is required to create Github Issues.')
 
-  def create_issue(self, title, description, label: str = 'bug'):
+  def create_issue(self, title, description, label: str = None):
     last_created_issue =  self.search_issue_with_title(title, label)
     if last_created_issue['total_count']:
-      issue_number = last_created_issue['items']['number']
-      comment_query = "/repos/{}/{}/issues/{}/comments".format(
-        self.owner, self.repo, issue_number
-      )
-      _COMMENT = "Creating a comment on already created issue."
+      items = last_created_issue['items'][0]
+      comment_url = items['comments_url']
+      issue_number = items['number']
+      _COMMENT = 'Creating comment on already created issue.'
       data = {
         'owner': self.owner,
         'repo': self.repo,
@@ -37,13 +36,11 @@ class GitHubIssues:
         issue_number: issue_number,
       }
       respone = requests.post(
-        comment_query, json.dumps(data),
+        comment_url, json.dumps(data),
         headers=self.headers
       )
       print(respone.json()
       )
-
-
     else:
       data = {
           'owner': self.owner,
@@ -55,7 +52,6 @@ class GitHubIssues:
       r = requests.post(
           url=self.query, data=json.dumps(data), headers=self.headers)
       print(r.json())
-      print(r)
 
   def comment_on_issue(self):
     """
@@ -64,9 +60,11 @@ class GitHubIssues:
     """
     raise NotImplementedError
   
-  def search_issue_with_title(self, title, label):
-    search_query = "repo:{}/{}+{} type:issue is:open label:{}".format(
-        self.owner, self.repo, title, label)
+  def search_issue_with_title(self, title, label=None):
+    search_query = "repo:{}/{}+{} type:issue is:open".format(
+        self.owner, self.repo, title)
+    if label:
+      search_query = search_query + ' label:{}'
     query = "https://api.github.com/search/issues?q={}".format(search_query)
 
     response = requests.get(url=query, headers=self.headers)
@@ -75,6 +73,7 @@ class GitHubIssues:
 
 if __name__ == '__main__':
   my_issues = GitHubIssues(owner='AnandInguva', repo='ghactions-issues')
-  my_issues.create_issue(title='Bug creation. Please delete the issue. ',
-    description='Testing creating issues with Github rest APIs',
-                       label='bug')
+  title = 'Bug creation. Please delete the issue. '
+  label = 'bug'
+  my_issues.create_issue(title=title,
+    description='Testing creating issues with Github rest APIs')
