@@ -40,7 +40,7 @@ class GitHubIssues:
 
 
 if __name__ == '__main__':
-  my_issues = GitHubIssues(owner='AnandInguva', repo='ghaction-issues')
+  my_issues = GitHubIssues(owner='AnandInguva', repo='ghactions-issues')
   my_issues.create_issue(title='Bug creation. Please delete the issue. ',
     description='Testing creating issues with Github rest APIs',
                        label='bug')
