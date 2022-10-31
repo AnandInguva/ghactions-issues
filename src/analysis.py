@@ -2,6 +2,8 @@
 import requests
 import os
 import json
+from typing import List
+from typing import Optional
 
 class GitHubIssues:
   def __init__(self, owner, repo):
@@ -20,13 +22,16 @@ class GitHubIssues:
       raise Exception(
           'A Github Personal Access token is required to create Github Issues.')
 
-  def create_issue(self, title, description, label: str = None):
+  def create_issue(
+    self, 
+    title, description, 
+    labels:Optional[List] = None):
     """
     Create an issue with title, description with a label.
     If an issue is already present, comment on the issue instead of 
     creating a duplicate issue.
     """
-    last_created_issue =  self.search_issue_with_title(title, label)
+    last_created_issue =  self.search_issue_with_title(title, labels)
     if last_created_issue['total_count']:
       self.comment_on_issue(last_created_issue=last_created_issue)
     else:
@@ -35,11 +40,10 @@ class GitHubIssues:
           'repo': self.repo,
           'title': title,
           'body': description,
-          'label': label
+          'labels': labels
       }
       r = requests.post(
           url=self.query, data=json.dumps(data), headers=self.headers)
-      print(r.json())
 
   def comment_on_issue(self, last_created_issue):
     """
@@ -62,14 +66,15 @@ class GitHubIssues:
         headers=self.headers
       )
     
-  def search_issue_with_title(self, title, label=None):
+  def search_issue_with_title(self, title, labels=None):
     """
     Filter issues using title.
     """
     search_query = "repo:{}/{}+{} type:issue is:open".format(
         self.owner, self.repo, title)
-    if label:
-      search_query = search_query + ' label:{}'
+    if labels:
+      for label in labels:
+        search_query = search_query + ' label:{}'.format(label)
     query = "https://api.github.com/search/issues?q={}".format(search_query)
 
     response = requests.get(url=query, headers=self.headers)
@@ -81,4 +86,5 @@ if __name__ == '__main__':
   title = 'Bug creation. Please delete the issue. '
   label = 'bug'
   my_issues.create_issue(title=title,
-    description='Testing creating issues with Github rest APIs')
+    description='Testing creating issues with Github rest APIs',
+    labels=['bug'])
